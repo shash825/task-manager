@@ -26,13 +26,21 @@ export default function TaskBoard() {
 
   const completed = tasks.filter((t) => t.done).length;
   const active = tasks.length - completed;
-  const visible =
-    filter === 'all' ? tasks :
-    filter === 'done' ? tasks.filter((t) => t.done) :
-    tasks.filter((t) => !t.done);
 
-  function handleAdd(title) {
-    setTasks([...tasks, { id: crypto.randomUUID(), title, done: false }]);
+  const visible = (filter === 'all'
+    ? tasks
+    : filter === 'done'
+      ? tasks.filter((t) => t.done)
+      : tasks.filter((t) => !t.done)
+  ).toSorted((a, b) => {
+    if (!a.dueDate && !b.dueDate) return 0;
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
+
+  function handleAdd(title, dueDate) {
+    setTasks([...tasks, { id: crypto.randomUUID(), title, done: false, dueDate }]);
   }
 
   function handleToggle(id) {

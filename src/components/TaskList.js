@@ -14,6 +14,7 @@ export default function TaskList({ tasks, onToggle, onDelete }) {
             id={task.id}
             title={task.title}
             done={task.done}
+            dueDate={task.dueDate}
             onToggle={onToggle}
             onDelete={onDelete}
           />

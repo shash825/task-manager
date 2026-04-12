@@ -4,12 +4,14 @@ import { useState } from 'react';
 
 export default function AddTaskForm({ onAdd }) {
   const [title, setTitle] = useState('');
+  const [dueDate, setDueDate] = useState('');
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
-    onAdd(title.trim());
+    onAdd(title.trim(), dueDate || null);
     setTitle('');
+    setDueDate('');
   }
 
   return (
@@ -19,6 +21,12 @@ export default function AddTaskForm({ onAdd }) {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="New task..."
         className="flex-1 border rounded px-3 py-2 text-sm"
+      />
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+        className="border rounded px-3 py-2 text-sm"
       />
       <button
         type="submit"
