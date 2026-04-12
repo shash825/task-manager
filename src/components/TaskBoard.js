@@ -6,11 +6,13 @@ import AddTaskForm from './AddTaskForm';
 import TaskList from './TaskList';
 
 export default function TaskBoard() {
-  const [tasks, setTasks] = useState(() => {
-    if (typeof window === 'undefined') return [];
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
     const saved = localStorage.getItem('tasks');
-    return saved ? JSON.parse(saved) : [];
-  });
+    if (saved) setTasks(JSON.parse(saved));
+  }, []);
+
 
   const [filter, setFilter] = useState('all');
 
