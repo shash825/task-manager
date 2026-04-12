@@ -6,23 +6,18 @@ import AddTaskForm from './AddTaskForm';
 import TaskList from './TaskList';
 
 export default function TaskBoard() {
-  const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('all');
-  const [loaded, setLoaded] = useState(false);
-
-  // Load tasks from localStorage once on mount
-  useEffect(() => {
+  const [tasks, setTasks] = useState(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('tasks');
-    if (saved) setTasks(JSON.parse(saved));
-    setLoaded(true);
-  }, []);
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  // Save tasks to localStorage, but only after initial load
+  const [filter, setFilter] = useState('all');
+
   useEffect(() => {
-    if (loaded) localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks, loaded]);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
-  // Update browser tab title
   useEffect(() => {
     const active = tasks.filter((t) => !t.done).length;
     document.title = `${active} tasks remaining`;
