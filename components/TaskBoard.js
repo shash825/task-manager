@@ -1,17 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AddTaskForm from './AddTaskForm';
 import TaskList from './TaskList';
 
 export default function TaskBoard() {
-  const [tasks, setTasks] = useState([
-    { id: 't1', title: 'Buy milk', done: false },
-    { id: 't2', title: 'Write tests', done: false },
-    { id: 't3', title: 'Ship it', done: false },
-  ]);
+  const [tasks, setTasks] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const [filter, setFilter] = useState('all');
+
+  // Persist tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  // Update the browser tab title with active task count
+  useEffect(() => {
+    const active = tasks.filter((t) => !t.done).length;
+    document.title = `${active} tasks remaining`;
+    return () => { document.title = 'Task Manager'; };
+  }, [tasks]);
 
   function handleAdd(title) {
     const newTask = { id: crypto.randomUUID(), title, done: false };
